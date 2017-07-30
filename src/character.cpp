@@ -1,7 +1,7 @@
 #include "inc/character.hpp"
 
 namespace ld39 {
-	Character::Character(float offsetX = 500, float offsetY = 250) : state(State::Still), orientation(Orientation::Left) {
+	Character::Character(float offsetX = 500, float offsetY = 250) : state(State::Still), orientation(Orientation::Left), moving_frame(0) {
 		this->still.loadFromFile("res/img/hero.png");
 		this->jumping.loadFromFile("res/img/jump1.png");
 		this->falling.loadFromFile("res/img/jump2.png");
@@ -24,15 +24,35 @@ namespace ld39 {
 			this->sprite.setTexture(this->jumping, true);
 			this->sprite.setOrigin(29, 46);
 		}
-		else {
-			this->sprite.setTexture(this->still, true);
-			this->sprite.setOrigin(14, 44);
-		}
 		if (offsetX > 0.0001f) {
+			this->sprite.setTexture(this->moving[this->moving_frame], true);
+			this->sprite.setOrigin(30, 43);
+			if (this->moving_clock.getElapsedTime().asSeconds() > 0.1) {
+				this->moving_clock.restart();
+				if (++this->moving_frame >= 4) {
+					this->moving_frame = 0;
+				}
+			}
+			this->sprite.setOrigin(14, 44);
 			this->sprite.setScale(1.0f, 1.0f);
 		}
 		else if (offsetX < -0.0001f) {
+			this->sprite.setTexture(this->moving[this->moving_frame], true);
+			this->sprite.setOrigin(30, 43);
+			if (this->moving_clock.getElapsedTime().asSeconds() > 0.1) {
+				this->moving_clock.restart();
+				if (++this->moving_frame >= 4) {
+					this->moving_frame = 0;
+				}
+			}
 			this->sprite.setScale(-1.0f, 1.0f);
+		}
+		else {
+			this->moving_frame = 0;
+		}
+		if (offsetY < 0.001f && offsetY > -0.001f && offsetX < 0.001f && offsetX > -0.001f) {
+			this->sprite.setTexture(this->still, true);
+			this->sprite.setOrigin(14, 44);
 		}
 		return;
 	}

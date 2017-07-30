@@ -25,11 +25,13 @@ namespace ld39 {
 			};
 			State state;
 			Orientation orientation;
+			std::uint8_t moving_frame;
 			sf::Sprite sprite;
 			sf::Texture still;
 			sf::Texture jumping;
 			sf::Texture falling;
 			std::vector<sf::Texture> moving;
+			sf::Clock moving_clock;
 	};
 }
 

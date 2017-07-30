@@ -4,6 +4,7 @@
 #include "inc/scene.hpp"
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Audio/Music.hpp>
 #include "inc/character.hpp"
 
 namespace ld39 {
@@ -17,6 +18,7 @@ namespace ld39 {
 			Character character;
 			sf::Sprite background;
 			sf::Texture background_texture;
+			sf::Music music;
 	};
 }
 
