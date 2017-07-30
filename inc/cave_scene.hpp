@@ -4,6 +4,7 @@
 #include "inc/scene.hpp"
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#include "inc/character.hpp"
 
 namespace ld39 {
 	class CaveScene : public Scene {
@@ -13,10 +14,9 @@ namespace ld39 {
 			virtual void render() override;
 		private:
 			std::uint16_t level;
+			Character character;
 			sf::Sprite background;
 			sf::Texture background_texture;
-			sf::Sprite character;
-			sf::Texture character_texture;
 	};
 }
 
