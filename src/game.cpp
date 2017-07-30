@@ -1,8 +1,10 @@
 #include "inc/game.hpp"
 #include <SFML/Window/Event.hpp>
 #include <SFML/System/Clock.hpp>
+#include "inc/cave_scene.hpp"
 
 namespace ld39 {
+	Game::Game() : window(sf::VideoMode(1000, 500), "LD39", sf::Style::Titlebar | sf::Style::Close), scene(new CaveScene(this->window, 0)) {}
 
 	void Game::run() {
 		double t = 0.0;
@@ -19,15 +21,14 @@ namespace ld39 {
 				}
 			}
 			while (accumulator >= dt) {
-				// integrate
+				this->scene->integrate();
 				accumulator -= dt;
 				t += dt;
 			}
-			// render
 			window.clear(sf::Color::Magenta);
+			this->scene->render();
 			window.display();
 		}
 		return;
 	}
-
 }
