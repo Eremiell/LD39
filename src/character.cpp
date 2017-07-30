@@ -5,7 +5,6 @@ namespace ld39 {
 		this->still.loadFromFile("res/img/hero.png");
 		this->jumping.loadFromFile("res/img/jump1.png");
 		this->falling.loadFromFile("res/img/jump2.png");
-		this->moving.resize(4);
 		this->moving[0].loadFromFile("res/img/run1.png");
 		this->moving[1].loadFromFile("res/img/run2.png");
 		this->moving[2].loadFromFile("res/img/run3.png");
@@ -50,7 +49,7 @@ namespace ld39 {
 		else {
 			this->moving_frame = 0;
 		}
-		if (offsetY < 0.001f && offsetY > -0.001f && offsetX < 0.001f && offsetX > -0.001f) {
+		if (offsetY < 0.0001f && offsetY > -0.0001f && offsetX < 0.0001f && offsetX > -0.0001f) {
 			this->sprite.setTexture(this->still, true);
 			this->sprite.setOrigin(14, 44);
 		}

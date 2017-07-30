@@ -30,7 +30,7 @@ namespace ld39 {
 			sf::Texture still;
 			sf::Texture jumping;
 			sf::Texture falling;
-			std::vector<sf::Texture> moving;
+			std::array<sf::Texture, 4> moving;
 			sf::Clock moving_clock;
 	};
 }
