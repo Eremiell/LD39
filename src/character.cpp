@@ -18,12 +18,15 @@ namespace ld39 {
 		this->sprite.move(offsetX, offsetY);
 		if (offsetY > 0.0001f) {
 			this->sprite.setTexture(this->falling, true);
+			this->sprite.setOrigin(29, 46);
 		}
 		else if (offsetY < -0.0001f) {
 			this->sprite.setTexture(this->jumping, true);
+			this->sprite.setOrigin(29, 46);
 		}
 		else {
 			this->sprite.setTexture(this->still, true);
+			this->sprite.setOrigin(14, 44);
 		}
 		if (offsetX > 0.0001f) {
 			this->sprite.setScale(1.0f, 1.0f);

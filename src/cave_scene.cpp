@@ -9,16 +9,16 @@ namespace ld39 {
 
 	void CaveScene::integrate(std::uint8_t controls) {
 		if (controls & static_cast<std::uint8_t>(Controls::Left) && !(controls & static_cast<std::uint8_t>(Controls::Right))) {
-			this->character.move(-2.0f, 0.0f);
+			this->character.move(-3.0f, 0.0f);
 		}
 		else if (controls & static_cast<std::uint8_t>(Controls::Right) && !(controls & static_cast<std::uint8_t>(Controls::Left))) {
-			this->character.move(2.0f, 0.0f);
+			this->character.move(3.0f, 0.0f);
 		}
 		if (controls & static_cast<std::uint8_t>(Controls::Up) && !(controls & static_cast<std::uint8_t>(Controls::Down))) {
-			this->character.move(0.0f, -3.0f);
+			this->character.move(0.0f, -2.0f);
 		}
 		else if (controls & static_cast<std::uint8_t>(Controls::Down) && !(controls & static_cast<std::uint8_t>(Controls::Up))) {
-			this->character.move(0.0f, 3.0f);
+			this->character.move(0.0f, 2.0f);
 		}
 		return;
 	}
