@@ -15,6 +15,8 @@ namespace ld39 {
 			std::int16_t level;
 			sf::Sprite background;
 			sf::Texture background_texture;
+			sf::Sprite character;
+			sf::Texture character_texture;
 	};
 }
 
