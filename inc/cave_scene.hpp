@@ -8,11 +8,11 @@
 namespace ld39 {
 	class CaveScene : public Scene {
 		public:
-			CaveScene(sf::RenderWindow &window, std::int16_t level);
-			virtual void integrate() override;
+			CaveScene(sf::RenderWindow &window, std::uint16_t level);
+			virtual void integrate(std::uint8_t controls) override;
 			virtual void render() override;
 		private:
-			std::int16_t level;
+			std::uint16_t level;
 			sf::Sprite background;
 			sf::Texture background_texture;
 			sf::Sprite character;
