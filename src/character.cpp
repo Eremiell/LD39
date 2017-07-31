@@ -1,7 +1,11 @@
 #include "inc/character.hpp"
 
+#include <SFML/Graphics/Font.hpp>
+#include <SFML/Graphics/Text.hpp>
+#include <sstream>
+
 namespace ld39 {
-	Character::Character(float offset_x = 500, float offset_y = 250) : airborne(false), walking(false), right(false), last_position(offset_x, offset_y), moving_frame(0) {
+	Character::Character(float offset_x = 500, float offset_y = 250) : airborne(false), jumped(false), rising(0.0f), last_position(offset_x, offset_y), moving_frame(0) {
 		this->still[0].loadFromFile("res/img/hero.png");
 		this->still[1].loadFromFile("res/img/night_hero.png");
 		this->jumping[0].loadFromFile("res/img/jump1.png");
@@ -18,16 +22,40 @@ namespace ld39 {
 		this->sprite.move(offset_x, offset_y);
 		return;
 	}
+	void Character::jump() {
+		static sf::Clock jump_clock;
+		if (!this->jumped && jump_clock.getElapsedTime().asSeconds() > 0.25f) {
+			jump_clock.restart();
+			this->rising = 10.0f;
+			if (this->airborne) {
+				this->jumped = true;
+			}
+		}
+		return;
+	}
+	void Character::rise() {
+		this->move(0.0f, -this->rising);
+		this->rising -= 0.25f;
+		return;
+	}
+	void Character::glue() {
+		this->airborne = false;
+		this->jumped = false;
+		this->rising = 0.0f;
+		return;
+	}
 	void Character::set_mannequin() {
 		if ((this->sprite.getPosition().x - this->last_position.x) > 0.0001f) {
 			this->sprite.setScale(1.0f, 1.0f);
 			if ((this->sprite.getPosition().y - this->last_position.y) > 0.0001f) {
 				this->sprite.setTexture(this->falling[0], true);
 				this->sprite.setOrigin(29, 48);
+				this->airborne = true;
 			}
 			else if ((this->sprite.getPosition().y - this->last_position.y) < -0.0001f) {
 				this->sprite.setTexture(this->jumping[0], true);
 				this->sprite.setOrigin(29, 48);
+				this->airborne = true;
 			}
 			else {
 				this->sprite.setTexture(this->moving[this->moving_frame], true);
@@ -45,10 +73,12 @@ namespace ld39 {
 			if ((this->sprite.getPosition().y - this->last_position.y) > 0.0001f) {
 				this->sprite.setTexture(this->falling[0], true);
 				this->sprite.setOrigin(29, 48);
+				this->airborne = true;
 			}
 			else if ((this->sprite.getPosition().y - this->last_position.y) < -0.0001f) {
 				this->sprite.setTexture(this->jumping[0], true);
 				this->sprite.setOrigin(29, 48);
+				this->airborne = true;
 			}
 			else {
 				this->sprite.setTexture(this->moving[this->moving_frame], true);
@@ -65,10 +95,12 @@ namespace ld39 {
 			if ((this->sprite.getPosition().y - this->last_position.y) > 0.0001f) {
 				this->sprite.setTexture(this->falling[0], true);
 				this->sprite.setOrigin(29, 48);
+				this->airborne = true;
 			}
 			else if ((this->sprite.getPosition().y - this->last_position.y) < -0.0001f) {
 				this->sprite.setTexture(this->jumping[0], true);
 				this->sprite.setOrigin(29, 48);
+				this->airborne = true;
 			}
 			else {
 				this->sprite.setTexture(this->still[0], true);
@@ -81,6 +113,12 @@ namespace ld39 {
 	}
 	void Character::render(sf::RenderWindow &window) const {
 		window.draw(this->sprite);
+		sf::Font font;
+		font.loadFromFile("res/fon/bpdots.squares-bold.otf");
+		std::stringstream ss;
+		ss << "airborne: " << (this->airborne?"true":"false") << "\tjumped: " << (this->jumped?"true":"false");
+		sf::Text text(ss.str(), font);
+		window.draw(text);
 		return;
 	}
 	float Character::get_x() const {

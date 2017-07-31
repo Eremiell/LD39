@@ -79,12 +79,13 @@ namespace ld39 {
 			x += 3.0f;
 		}
 		if (controls & static_cast<std::uint8_t>(Controls::Up) && !(controls & static_cast<std::uint8_t>(Controls::Down))) {
-			y -= 10.0f;
+			this->character.jump();
 		}
 		else if (controls & static_cast<std::uint8_t>(Controls::Down) && !(controls & static_cast<std::uint8_t>(Controls::Up))) {
 			y += 5.0f;
 		}
 		this->character.move(x, y);
+		this->character.rise();
 		this->gravity();
 		this->collision_resolution();
 		this->character.set_mannequin();
@@ -99,28 +100,24 @@ namespace ld39 {
 		return;
 	}
 	void CaveScene::collision_resolution() {
-		bool changed = true;
-		while (changed) {
-			changed = false;
-			for (auto wall : this->walls) {
-				sf::Rect<float> intersection;
-				if (this->character.get_hitbox().intersects(wall.get_hitbox(), intersection)) {
-					changed = true;
-					if (intersection.width < intersection.height) {
-						if (intersection.left == this->character.get_hitbox().left) {
-							this->character.move(intersection.width, 0.0f);
-						}
-						else {
-							this->character.move(-intersection.width, 0.0f);
-						}
+		for (auto wall : this->walls) {
+			sf::Rect<float> intersection;
+			if (this->character.get_hitbox().intersects(wall.get_hitbox(), intersection)) {
+				if (intersection.width < intersection.height) {
+					if (intersection.left == this->character.get_hitbox().left) {
+						this->character.move(intersection.width, 0.0f);
 					}
 					else {
-						if (intersection.top == this->character.get_hitbox().top) {
-							this->character.move(0.0f, intersection.height);
-						}
-						else {
-							this->character.move(0.0f, -intersection.height);
-						}
+						this->character.move(-intersection.width, 0.0f);
+					}
+				}
+				else {
+					if (intersection.top == this->character.get_hitbox().top) {
+						this->character.move(0.0f, intersection.height);
+					}
+					else {
+						this->character.move(0.0f, -intersection.height);
+						this->character.glue();
 					}
 				}
 			}

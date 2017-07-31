@@ -13,6 +13,9 @@ namespace ld39 {
 		public:
 			Character(float offset_x, float offset_y);
 			void move(float offset_x, float offset_y);
+			void jump();
+			void rise();
+			void glue();
 			void set_mannequin();
 			void render(sf::RenderWindow &window) const;
 			float get_x() const;
@@ -22,8 +25,8 @@ namespace ld39 {
 			sf::Rect<float> get_hitbox() const;
 		private:
 			bool airborne;
-			bool walking;
-			bool right;
+			bool jumped;
+			float rising;
 			sf::Vector2<float> last_position;
 			std::uint8_t moving_frame;
 			sf::Sprite sprite;
