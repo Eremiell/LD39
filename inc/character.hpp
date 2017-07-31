@@ -6,6 +6,8 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Rect.hpp>
+#include <SFML/Audio/Sound.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/System/Vector2.hpp>
 
 namespace ld39 {
@@ -13,6 +15,7 @@ namespace ld39 {
 		public:
 			Character(float offset_x = 500, float offset_y = 250);
 			void move(float offset_x, float offset_y);
+			void new_spawn(sf::Vector2<float> spawn);
 			void jump();
 			void rise();
 			void glue();
@@ -42,6 +45,8 @@ namespace ld39 {
 			std::array<sf::Texture, 2> falling;
 			std::array<sf::Texture, 8> moving;
 			std::array<sf::Texture, 2> hearts;
+			std::array<sf::SoundBuffer, 6> sfx_buffers;
+			std::array<sf::Sound, 6> sfx;
 			sf::Sprite heart;
 	};
 }

@@ -21,9 +21,36 @@ namespace ld39 {
 		this->sprite.setPosition(offset_x, offset_y);
 		this->hearts[0].loadFromFile("res/img/heart.png");
 		this->hearts[1].loadFromFile("res/img/heartblack.png");
+		this->sfx_buffers[0].loadFromFile("res/sfx/walk.wav");
+		this->sfx_buffers[1].loadFromFile("res/sfx/jump.wav");
+		this->sfx_buffers[2].loadFromFile("res/sfx/Land.wav");
+		this->sfx_buffers[3].loadFromFile("res/sfx/Fall.wav");
+		this->sfx_buffers[4].loadFromFile("res/sfx/life.wav");
+		this->sfx_buffers[5].loadFromFile("res/sfx/level.wav");
+		this->sfx[0].setBuffer(this->sfx_buffers[0]);
+		this->sfx[1].setBuffer(this->sfx_buffers[1]);
+		this->sfx[2].setBuffer(this->sfx_buffers[2]);
+		this->sfx[3].setBuffer(this->sfx_buffers[3]);
+		this->sfx[4].setBuffer(this->sfx_buffers[4]);
+		this->sfx[5].setBuffer(this->sfx_buffers[5]);
+		/*this->sfx[0].setVolume(100.0f);
+		this->sfx[1].setVolume(30.0f);
+		this->sfx[2].setVolume(30.0f);
+		this->sfx[3].setVolume(30.0f);
+		this->sfx[4].setVolume(30.0f);
+		this->sfx[5].setVolume(30.0f);*/
+		for (auto &sound : this->sfx) {
+			sound.setVolume(30.0f);
+		}
 	}
 	void Character::move(float offset_x, float offset_y) {
 		this->sprite.move(offset_x, offset_y);
+		return;
+	}
+	void Character::new_spawn(sf::Vector2<float> spawn) {
+		this->spawn_point = spawn;
+		this->last_position = spawn;
+		this->sprite.setPosition(spawn);
 		return;
 	}
 	void Character::jump() {
@@ -31,6 +58,7 @@ namespace ld39 {
 		if (!this->jumped && jump_clock.getElapsedTime().asSeconds() > 0.25f) {
 			jump_clock.restart();
 			this->rising = 10.0f;
+			this->sfx[1].play();
 			if (this->airborne) {
 				this->jumped = true;
 			}
@@ -43,6 +71,9 @@ namespace ld39 {
 		return;
 	}
 	void Character::glue() {
+		if (this->airborne) {
+			this->sfx[2].play();
+		}
 		this->airborne = false;
 		this->jumped = false;
 		this->rising = 0.0f;
@@ -50,6 +81,7 @@ namespace ld39 {
 		return;
 	}
 	void Character::fall() {
+		this->sfx[3].play();
 		this->sprite.setPosition(this->spawn_point);
 		this->last_position = this->spawn_point;
 		this->glue();
@@ -101,6 +133,7 @@ namespace ld39 {
 						this->moving_frame = 0;
 					}
 				}
+				this->sfx[0].play();
 			}
 		}
 		else if ((this->sprite.getPosition().x - this->last_position.x) < -0.0001f) {
@@ -139,6 +172,7 @@ namespace ld39 {
 						this->moving_frame = 0;
 					}
 				}
+				this->sfx[0].play();
 			}
 		}
 		else {

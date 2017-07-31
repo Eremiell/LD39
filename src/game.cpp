@@ -5,22 +5,32 @@
 #include "inc/utility.hpp"
 
 namespace ld39 {
-	Game::Game() : window(sf::VideoMode(1000, 500), "LD39", sf::Style::Titlebar | sf::Style::Close), scene(new CaveScene(this->window, 0)) {}
+	Game::Game() : window(sf::VideoMode(1000, 500), "LD39", sf::Style::Titlebar | sf::Style::Close), scene(new CaveScene(this->window, this->background_textures)) {
+		this->background_textures[0].loadFromFile("res/img/firststage.png");
+		this->background_textures[1].loadFromFile("res/img/nudebackround.png");
+		this->background_textures[2].loadFromFile("res/img/bluebackground.png");
+		this->background_textures[3].loadFromFile("res/img/redbackground.png");
+		this->background_textures[4].loadFromFile("res/img/yellowbackground.png");
+		this->background_textures[5].loadFromFile("res/img/greenbackground.png");
+		this->background_textures[6].loadFromFile("res/img/night_firststage.png");
+		this->background_textures[7].loadFromFile("res/img/night_background-1.png");
+		this->scene->init();
+	}
 
 	void Game::run() {
+		bool running = true;
 		double t = 0.0;
 		const double dt = 1.0 / 60;
 		double accumulator = 0.0;
 		sf::Clock timer;
 		std::uint8_t controls = 0u;
-		while (this->window.isOpen()) {
+		while (running) {
 			accumulator += timer.getElapsedTime().asSeconds();
 			timer.restart();
 			sf::Event event;
 			while (window.pollEvent(event)) {
 				if (event.type == sf::Event::Closed) {
-					this->window.close();
-					return;
+					running = false;
 				}
 				else if (event.type == sf::Event::KeyPressed) {
 					if (event.key.code == sf::Keyboard::Space) {
@@ -30,8 +40,7 @@ namespace ld39 {
 			}
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl))) {
-				this->window.close();
-				return;
+				running = false;
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
 				controls |= static_cast<std::uint8_t>(Controls::Up);
@@ -45,9 +54,6 @@ namespace ld39 {
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
 				controls |= static_cast<std::uint8_t>(Controls::Right);
 			}
-			/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-				controls |= static_cast<std::uint8_t>(Controls::Space);
-			}*/
 			while (accumulator >= dt) {
 				this->scene->integrate(controls);
 				controls &= 0u;
@@ -57,6 +63,9 @@ namespace ld39 {
 			this->window.clear(sf::Color::Magenta);
 			this->scene->render();
 			this->window.display();
+			if (!running) {
+				this->window.close();
+			}
 		}
 		return;
 	}

@@ -9,27 +9,22 @@
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Audio/Music.hpp>
 #include "inc/character.hpp"
-#include "inc/wall.hpp"
+#include "inc/level.hpp"
 
 namespace ld39 {
 	class CaveScene : public Scene {
 		public:
-			CaveScene(sf::RenderWindow &window, std::uint64_t level);
+			CaveScene(sf::RenderWindow &window, std::array<sf::Texture, 8> &background_textures);
+			virtual void init() override;
 			virtual void integrate(std::uint8_t controls) override;
 			virtual void render() override;
 		private:
-			void collision_resolution();
 			void gravity();
-			void light_switch();
 			bool lit;
-			std::uint64_t level;
 			Character character;
-			sf::Sprite background;
-			std::array<sf::Texture, 6> background_textures;
+			std::array<sf::Texture, 8> &background_textures;
+			Level level;
 			sf::Music music;
-			std::array<sf::Texture, 10> wall_textures;
-			std::array<sf::Rect<float>, 10> wall_hitboxes;
-			std::vector<Wall> walls;
 			sf::Font font;
 			std::array<sf::Texture, 2> flashlight_textures;
 			sf::Sprite flashlight;
