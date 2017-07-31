@@ -17,6 +17,8 @@ namespace ld39 {
 			virtual void integrate(std::uint8_t controls) override;
 			virtual void render() const override;
 		private:
+			void collision_resolution();
+			void gravity();
 			std::uint64_t level;
 			Character character;
 			sf::Sprite background;

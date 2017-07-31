@@ -12,6 +12,7 @@ namespace ld39 {
 		public:
 			Character(float offset_x, float offset_y);
 			void move(float offset_x, float offset_y);
+			void push(float offset_x, float offset_y);
 			void render(sf::RenderWindow &window) const;
 			float get_x() const;
 			float get_y() const;
@@ -19,6 +20,9 @@ namespace ld39 {
 			float get_h() const;
 			sf::Rect<float> get_hitbox() const;
 		private:
+			bool airborne;
+			bool walking;
+			bool right;
 			std::uint8_t moving_frame;
 			sf::Sprite sprite;
 			std::array<sf::Texture, 2> still;

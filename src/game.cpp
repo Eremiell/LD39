@@ -21,11 +21,13 @@ namespace ld39 {
 			while (window.pollEvent(event)) {
 				if (event.type == sf::Event::Closed) {
 					this->window.close();
+					return;
 				}
 			}
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl))) {
 				this->window.close();
+				return;
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
 				controls |= static_cast<std::uint8_t>(Controls::Up);
