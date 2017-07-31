@@ -1,29 +1,22 @@
 #include "inc/character.hpp"
 
 namespace ld39 {
-	Character::Character(float offsetX = 500, float offsetY = 250) : state(State::Still), orientation(Orientation::Left), moving_frame(0) {
-		this->still.loadFromFile("res/img/hero.png");
-		this->jumping.loadFromFile("res/img/jump1.png");
-		this->falling.loadFromFile("res/img/jump2.png");
+	Character::Character(float offset_x = 500, float offset_y = 250) : /*state(State::Still), orientation(Orientation::Left), */moving_frame(0) {
+		this->still[0].loadFromFile("res/img/hero.png");
+		this->still[1].loadFromFile("res/img/night_hero.png");
+		this->jumping[0].loadFromFile("res/img/jump1.png");
+		this->falling[0].loadFromFile("res/img/jump2.png");
 		this->moving[0].loadFromFile("res/img/run1.png");
 		this->moving[1].loadFromFile("res/img/run2.png");
 		this->moving[2].loadFromFile("res/img/run3.png");
 		this->moving[3].loadFromFile("res/img/run4.png");
-		this->sprite.setTexture(this->still);
+		this->sprite.setTexture(this->still[0]);
 		this->sprite.setOrigin(14, 44);
-		this->sprite.setPosition(offsetX, offsetY);
+		this->sprite.setPosition(offset_x, offset_y);
 	}
-	void Character::move(float offsetX, float offsetY) {
-		this->sprite.move(offsetX, offsetY);
-		if (offsetY > 0.0001f) {
-			this->sprite.setTexture(this->falling, true);
-			this->sprite.setOrigin(29, 46);
-		}
-		else if (offsetY < -0.0001f) {
-			this->sprite.setTexture(this->jumping, true);
-			this->sprite.setOrigin(29, 46);
-		}
-		if (offsetX > 0.0001f) {
+	void Character::move(float offset_x, float offset_y) {
+		this->sprite.move(offset_x, offset_y);
+		if (offset_x > 0.0001f) {
 			this->sprite.setTexture(this->moving[this->moving_frame], true);
 			this->sprite.setOrigin(30, 43);
 			if (this->moving_clock.getElapsedTime().asSeconds() > 0.1) {
@@ -35,7 +28,7 @@ namespace ld39 {
 			this->sprite.setOrigin(14, 44);
 			this->sprite.setScale(1.0f, 1.0f);
 		}
-		else if (offsetX < -0.0001f) {
+		else if (offset_x < -0.0001f) {
 			this->sprite.setTexture(this->moving[this->moving_frame], true);
 			this->sprite.setOrigin(30, 43);
 			if (this->moving_clock.getElapsedTime().asSeconds() > 0.1) {
@@ -49,14 +42,37 @@ namespace ld39 {
 		else {
 			this->moving_frame = 0;
 		}
-		if (offsetY < 0.0001f && offsetY > -0.0001f && offsetX < 0.0001f && offsetX > -0.0001f) {
-			this->sprite.setTexture(this->still, true);
+		if (offset_y > 0.0001f) {
+			this->sprite.setTexture(this->falling[0], true);
+			this->sprite.setOrigin(29, 46);
+		}
+		else if (offset_y < -0.0001f) {
+			this->sprite.setTexture(this->jumping[0], true);
+			this->sprite.setOrigin(29, 46);
+		}
+		if (offset_y < 0.0001f && offset_y > -0.0001f && offset_x < 0.0001f && offset_x > -0.0001f) {
+			this->sprite.setTexture(this->still[0], true);
 			this->sprite.setOrigin(14, 44);
 		}
 		return;
 	}
-	void Character::render(sf::RenderWindow &window) {
+	void Character::render(sf::RenderWindow &window) const {
 		window.draw(this->sprite);
 		return;
+	}
+	float Character::get_x() const {
+		return this->sprite.getPosition().x - 14.0f;
+	}
+	float Character::get_y() const {
+		return this->sprite.getPosition().y - 44.0f;
+	}
+	float Character::get_w() const {
+		return 28.0f;
+	}
+	float Character::get_h() const {
+		return 87.0f;
+	}
+	sf::Rect<float> Character::get_hitbox() const {
+		return sf::Rect<float>(this->get_x(), this->get_y(), this->get_w(), this->get_h());
 	}
 }

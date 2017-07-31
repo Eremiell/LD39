@@ -1,17 +1,16 @@
-#ifndef CHARACTER_HPP
-#define CHARACTER_HPP
+#ifndef WALL_HPP
+#define WALL_HPP
 
-#include <array>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Rect.hpp>
 
 namespace ld39 {
-	class Character {
+	class Wall {
 		public:
-			Character(float offset_x, float offset_y);
-			void move(float offset_x, float offset_y);
+			Wall(float offset_x, float offset_y, float x, float y, float w, float h, sf::Texture &texture, bool mirrored = false);
+			Wall(float offset_x, float offset_y, sf::Rect<float> &hitbox, sf::Texture &texture, bool mirrored = false);
 			void render(sf::RenderWindow &window) const;
 			float get_x() const;
 			float get_y() const;
@@ -19,13 +18,8 @@ namespace ld39 {
 			float get_h() const;
 			sf::Rect<float> get_hitbox() const;
 		private:
-			std::uint8_t moving_frame;
+			sf::Rect<float> hitbox;
 			sf::Sprite sprite;
-			std::array<sf::Texture, 2> still;
-			std::array<sf::Texture, 2> jumping;
-			std::array<sf::Texture, 2> falling;
-			std::array<sf::Texture, 8> moving;
-			sf::Clock moving_clock;
 	};
 }
 
