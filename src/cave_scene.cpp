@@ -87,6 +87,7 @@ namespace ld39 {
 		this->character.move(x, y);
 		this->gravity();
 		this->collision_resolution();
+		this->character.set_mannequin();
 		return;
 	}
 	void CaveScene::render() const {
@@ -107,18 +108,18 @@ namespace ld39 {
 					changed = true;
 					if (intersection.width < intersection.height) {
 						if (intersection.left == this->character.get_hitbox().left) {
-							this->character.push(intersection.width, 0.0f);
+							this->character.move(intersection.width, 0.0f);
 						}
 						else {
-							this->character.push(-intersection.width, 0.0f);
+							this->character.move(-intersection.width, 0.0f);
 						}
 					}
 					else {
 						if (intersection.top == this->character.get_hitbox().top) {
-							this->character.push(0.0f, intersection.height);
+							this->character.move(0.0f, intersection.height);
 						}
 						else {
-							this->character.push(0.0f, -intersection.height);
+							this->character.move(0.0f, -intersection.height);
 						}
 					}
 				}
