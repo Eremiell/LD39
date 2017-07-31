@@ -6,6 +6,7 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Rect.hpp>
+#include <SFML/Graphics/Font.hpp>
 #include <SFML/Audio/Music.hpp>
 #include "inc/character.hpp"
 #include "inc/wall.hpp"
@@ -15,10 +16,12 @@ namespace ld39 {
 		public:
 			CaveScene(sf::RenderWindow &window, std::uint64_t level);
 			virtual void integrate(std::uint8_t controls) override;
-			virtual void render() const override;
+			virtual void render() override;
 		private:
 			void collision_resolution();
 			void gravity();
+			void light_switch();
+			bool lit;
 			std::uint64_t level;
 			Character character;
 			sf::Sprite background;
@@ -27,6 +30,9 @@ namespace ld39 {
 			std::array<sf::Texture, 10> wall_textures;
 			std::array<sf::Rect<float>, 10> wall_hitboxes;
 			std::vector<Wall> walls;
+			sf::Font font;
+			std::array<sf::Texture, 2> flashlight_textures;
+			sf::Sprite flashlight;
 	};
 }
 

@@ -14,7 +14,6 @@ namespace ld39 {
 		sf::Clock timer;
 		std::uint8_t controls = 0u;
 		while (this->window.isOpen()) {
-			controls &= 0u;
 			accumulator += timer.getElapsedTime().asSeconds();
 			timer.restart();
 			sf::Event event;
@@ -22,6 +21,11 @@ namespace ld39 {
 				if (event.type == sf::Event::Closed) {
 					this->window.close();
 					return;
+				}
+				else if (event.type == sf::Event::KeyPressed) {
+					if (event.key.code == sf::Keyboard::Space) {
+						controls |= static_cast<std::uint8_t>(Controls::Space);
+					}
 				}
 			}
 
@@ -41,8 +45,12 @@ namespace ld39 {
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
 				controls |= static_cast<std::uint8_t>(Controls::Right);
 			}
+			/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+				controls |= static_cast<std::uint8_t>(Controls::Space);
+			}*/
 			while (accumulator >= dt) {
 				this->scene->integrate(controls);
+				controls &= 0u;
 				accumulator -= dt;
 				t += dt;
 			}

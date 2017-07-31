@@ -3,6 +3,7 @@ namespace ld39 {
 		Up = 1 << 0,
 		Down = 1 << 1,
 		Left = 1 << 2,
-		Right = 1 << 3
+		Right = 1 << 3,
+		Space = 1 << 4
 	};
 }

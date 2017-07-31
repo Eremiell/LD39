@@ -8,7 +8,7 @@ namespace ld39 {
 		public:
 			Scene(sf::RenderWindow &window) : window(window) {}
 			virtual void integrate(std::uint8_t controls) = 0;
-			virtual void render() const = 0;
+			virtual void render() = 0;
 		protected:
 			sf::RenderWindow &window;
 	};

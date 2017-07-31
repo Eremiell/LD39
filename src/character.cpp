@@ -1,18 +1,26 @@
 #include "inc/character.hpp"
 
 namespace ld39 {
-	Character::Character(float offset_x = 500, float offset_y = 250) : airborne(false), jumped(false), rising(0.0f), last_position(offset_x, offset_y), moving_frame(0) {
+	Character::Character(float offset_x, float offset_y) : lives(5), max_lives(5), airborne(false), jumped(false), stands(true), rising(0.0f), last_position(offset_x, offset_y), spawn_point(offset_x, offset_y), moving_frame(0) {
 		this->still[0].loadFromFile("res/img/hero.png");
 		this->still[1].loadFromFile("res/img/night_hero.png");
 		this->jumping[0].loadFromFile("res/img/jump1.png");
+		this->jumping[1].loadFromFile("res/img/night_jump1.png");
 		this->falling[0].loadFromFile("res/img/jump2.png");
+		this->falling[1].loadFromFile("res/img/night_jump2.png");
 		this->moving[0].loadFromFile("res/img/run1.png");
 		this->moving[1].loadFromFile("res/img/run2.png");
 		this->moving[2].loadFromFile("res/img/run3.png");
 		this->moving[3].loadFromFile("res/img/run4.png");
+		this->moving[4].loadFromFile("res/img/night_run1.png");
+		this->moving[5].loadFromFile("res/img/night_run2.png");
+		this->moving[6].loadFromFile("res/img/night_run3.png");
+		this->moving[7].loadFromFile("res/img/night_run4.png");
 		this->sprite.setTexture(this->still[0]);
 		this->sprite.setOrigin(14, 44);
 		this->sprite.setPosition(offset_x, offset_y);
+		this->hearts[0].loadFromFile("res/img/heart.png");
+		this->hearts[1].loadFromFile("res/img/heartblack.png");
 	}
 	void Character::move(float offset_x, float offset_y) {
 		this->sprite.move(offset_x, offset_y);
@@ -38,26 +46,57 @@ namespace ld39 {
 		this->airborne = false;
 		this->jumped = false;
 		this->rising = 0.0f;
+		this->stands = true;
 		return;
 	}
-	void Character::set_mannequin() {
+	void Character::fall() {
+		this->sprite.setPosition(this->spawn_point);
+		this->last_position = this->spawn_point;
+		this->glue();
+		--this->lives;
+		return;
+	}
+	bool Character::is_alive() {
+		return static_cast<bool>(this->lives);
+	}
+	bool Character::is_still() {
+		return this->stands && this->rising < 0.0001f;
+	}
+	void Character::set_mannequin(bool lit) {
+		static sf::Clock moving_clock;
+		this->stands = false;
 		if ((this->sprite.getPosition().x - this->last_position.x) > 0.0001f) {
 			this->sprite.setScale(1.0f, 1.0f);
 			if ((this->sprite.getPosition().y - this->last_position.y) > 0.0001f) {
-				this->sprite.setTexture(this->falling[0], true);
+				if (lit) {
+					this->sprite.setTexture(this->falling[0], true);
+				}
+				else {
+					this->sprite.setTexture(this->falling[1], true);
+				}
 				this->sprite.setOrigin(29, 48);
 				this->airborne = true;
 			}
 			else if ((this->sprite.getPosition().y - this->last_position.y) < -0.0001f) {
-				this->sprite.setTexture(this->jumping[0], true);
+				if (lit) {
+					this->sprite.setTexture(this->jumping[0], true);
+				}
+				else {
+					this->sprite.setTexture(this->jumping[1], true);
+				}
 				this->sprite.setOrigin(29, 48);
 				this->airborne = true;
 			}
 			else {
-				this->sprite.setTexture(this->moving[this->moving_frame], true);
+				if (lit) {
+					this->sprite.setTexture(this->moving[this->moving_frame], true);
+				}
+				else {
+					this->sprite.setTexture(this->moving[this->moving_frame + 4], true);
+				}
 				this->sprite.setOrigin(30, 42);
-				if (this->moving_clock.getElapsedTime().asSeconds() > 0.1) {
-					this->moving_clock.restart();
+				if (moving_clock.getElapsedTime().asSeconds() > 0.1) {
+					moving_clock.restart();
 					if (++this->moving_frame >= 4) {
 						this->moving_frame = 0;
 					}
@@ -67,20 +106,35 @@ namespace ld39 {
 		else if ((this->sprite.getPosition().x - this->last_position.x) < -0.0001f) {
 			this->sprite.setScale(-1.0f, 1.0f);
 			if ((this->sprite.getPosition().y - this->last_position.y) > 0.0001f) {
-				this->sprite.setTexture(this->falling[0], true);
+				if (lit) {
+					this->sprite.setTexture(this->falling[0], true);
+				}
+				else {
+					this->sprite.setTexture(this->falling[1], true);
+				}
 				this->sprite.setOrigin(29, 48);
 				this->airborne = true;
 			}
 			else if ((this->sprite.getPosition().y - this->last_position.y) < -0.0001f) {
-				this->sprite.setTexture(this->jumping[0], true);
+				if (lit) {
+					this->sprite.setTexture(this->jumping[0], true);
+				}
+				else {
+					this->sprite.setTexture(this->jumping[1], true);
+				}
 				this->sprite.setOrigin(29, 48);
 				this->airborne = true;
 			}
 			else {
-				this->sprite.setTexture(this->moving[this->moving_frame], true);
+				if (lit) {
+					this->sprite.setTexture(this->moving[this->moving_frame], true);
+				}
+				else {
+					this->sprite.setTexture(this->moving[this->moving_frame + 4], true);
+				}
 				this->sprite.setOrigin(30, 42);
-				if (this->moving_clock.getElapsedTime().asSeconds() > 0.1) {
-					this->moving_clock.restart();
+				if (moving_clock.getElapsedTime().asSeconds() > 0.1) {
+					moving_clock.restart();
 					if (++this->moving_frame >= 4) {
 						this->moving_frame = 0;
 					}
@@ -89,26 +143,52 @@ namespace ld39 {
 		}
 		else {
 			if ((this->sprite.getPosition().y - this->last_position.y) > 0.0001f) {
-				this->sprite.setTexture(this->falling[0], true);
+				if (lit) {
+					this->sprite.setTexture(this->falling[0], true);
+				}
+				else {
+					this->sprite.setTexture(this->falling[1], true);
+				}
 				this->sprite.setOrigin(29, 48);
 				this->airborne = true;
 			}
 			else if ((this->sprite.getPosition().y - this->last_position.y) < -0.0001f) {
-				this->sprite.setTexture(this->jumping[0], true);
+				if (lit) {
+					this->sprite.setTexture(this->jumping[0], true);
+				}
+				else {
+					this->sprite.setTexture(this->jumping[1], true);
+				}
 				this->sprite.setOrigin(29, 48);
 				this->airborne = true;
 			}
 			else {
-				this->sprite.setTexture(this->still[0], true);
+				if (lit) {
+					this->sprite.setTexture(this->still[0], true);
+				}
+				else {
+					this->sprite.setTexture(this->still[1], true);
+				}
 				this->sprite.setOrigin(14, 44);
+				this->stands = true;
 			}
 		}
 		this->last_position.x = this->sprite.getPosition().x;
 		this->last_position.y = this->sprite.getPosition().y;
 		return;
 	}
-	void Character::render(sf::RenderWindow &window) const {
+	void Character::render(sf::RenderWindow &window) {
 		window.draw(this->sprite);
+		for (std::uint8_t i = 0; i < this->max_lives; ++i) {
+			if (this->lives > i) {
+				this->heart.setTexture(this->hearts[0], true);
+			}
+			else {
+				this->heart.setTexture(this->hearts[1], true);
+			}
+			this->heart.setPosition(10.0f + i * 60.0f, 10.0f);
+			window.draw(this->heart);
+		}
 		return;
 	}
 	float Character::get_x() const {
