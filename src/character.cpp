@@ -1,9 +1,5 @@
 #include "inc/character.hpp"
 
-#include <SFML/Graphics/Font.hpp>
-#include <SFML/Graphics/Text.hpp>
-#include <sstream>
-
 namespace ld39 {
 	Character::Character(float offset_x = 500, float offset_y = 250) : airborne(false), jumped(false), rising(0.0f), last_position(offset_x, offset_y), moving_frame(0) {
 		this->still[0].loadFromFile("res/img/hero.png");
@@ -113,12 +109,6 @@ namespace ld39 {
 	}
 	void Character::render(sf::RenderWindow &window) const {
 		window.draw(this->sprite);
-		sf::Font font;
-		font.loadFromFile("res/fon/bpdots.squares-bold.otf");
-		std::stringstream ss;
-		ss << "airborne: " << (this->airborne?"true":"false") << "\tjumped: " << (this->jumped?"true":"false");
-		sf::Text text(ss.str(), font);
-		window.draw(text);
 		return;
 	}
 	float Character::get_x() const {
