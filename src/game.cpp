@@ -11,7 +11,7 @@ namespace ld39 {
 		this->background_textures[2].loadFromFile("res/img/bluebackground.png");
 		this->background_textures[3].loadFromFile("res/img/redbackground.png");
 		this->background_textures[4].loadFromFile("res/img/yellowbackground.png");
-		this->background_textures[5].loadFromFile("res/img/greenbackground.png");
+		this->background_textures[5].loadFromFile("res/img/greenbackround.png");
 		this->background_textures[6].loadFromFile("res/img/night_firststage.png");
 		this->background_textures[7].loadFromFile("res/img/night_background-1.png");
 		this->scene->init();
@@ -24,6 +24,7 @@ namespace ld39 {
 		double accumulator = 0.0;
 		sf::Clock timer;
 		std::uint8_t controls = 0u;
+		std::uint8_t eggs = 0u;
 		while (running) {
 			accumulator += timer.getElapsedTime().asSeconds();
 			timer.restart();
@@ -35,6 +36,66 @@ namespace ld39 {
 				else if (event.type == sf::Event::KeyPressed) {
 					if (event.key.code == sf::Keyboard::Space) {
 						controls |= static_cast<std::uint8_t>(Controls::Space);
+						eggs = 0;
+					}
+					else if (event.key.code == sf::Keyboard::Up) {
+						if (!eggs || eggs == 1) {
+							++eggs;
+						}
+						else {
+							eggs = 0;
+						}
+					}
+					else if (event.key.code == sf::Keyboard::Down) {
+						if (eggs == 2 || eggs == 3) {
+							++eggs;
+						}
+						else {
+							eggs = 0;
+						}
+					}
+					else if (event.key.code == sf::Keyboard::Left) {
+						if (eggs == 4 || eggs == 6) {
+							++eggs;
+						}
+						else {
+							eggs = 0;
+						}
+					}
+					else if (event.key.code == sf::Keyboard::Right) {
+						if (eggs == 5 || eggs == 7) {
+							++eggs;
+						}
+						else {
+							eggs = 0;
+						}
+					}
+					else if (event.key.code == sf::Keyboard::A) {
+						if (eggs == 9) {
+							++eggs;
+						}
+						else {
+							eggs = 0;
+						}
+					}
+					else if (event.key.code == sf::Keyboard::B) {
+						if (eggs == 8) {
+							++eggs;
+						}
+						else {
+							eggs = 0;
+						}
+					}
+					else if (event.key.code == sf::Keyboard::Return) {
+						if (eggs == 10) {
+							this->scene->make_omelette();
+						}
+						else {
+							eggs = 0;
+						}
+					}
+					else {
+						eggs = 0;
 					}
 				}
 			}

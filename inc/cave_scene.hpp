@@ -18,6 +18,7 @@ namespace ld39 {
 			virtual void init() override;
 			virtual void integrate(std::uint8_t controls) override;
 			virtual void render() override;
+			virtual void make_omelette() override;
 		private:
 			void gravity();
 			bool lit;

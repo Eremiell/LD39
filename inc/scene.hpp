@@ -10,6 +10,7 @@ namespace ld39 {
 			virtual void init() = 0;
 			virtual void integrate(std::uint8_t controls) = 0;
 			virtual void render() = 0;
+			virtual void make_omelette() = 0;
 		protected:
 			sf::RenderWindow &window;
 	};

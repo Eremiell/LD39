@@ -9,11 +9,11 @@ namespace ld39 {
 		this->music.setVolume(20);
 		this->music.play();
 		this->font.loadFromFile("res/fon/bpdots.squares-bold.otf");
-		this->flashlight_textures[0].loadFromFile("res/img/flash.png");
-		this->flashlight_textures[1].loadFromFile("res/img/flash2.png");
+		this->flashlight_textures[0].loadFromFile("res/img/lantern_off.png");
+		this->flashlight_textures[1].loadFromFile("res/img/lantern_on.png");
 		this->flashlight.setTexture(this->flashlight_textures[1]);
-		this->flashlight.setScale(0.25f, 0.25f);
-		this->flashlight.setOrigin(242.0f, 206.0f);
+		this->flashlight.setScale(0.5f, 0.5f);
+		this->flashlight.setOrigin(2 * this->flashlight.getGlobalBounds().width, 2 * this->flashlight.getGlobalBounds().height);
 		this->flashlight.setPosition(990.0f, 490.0f);
 	}
 	void CaveScene::init() {
@@ -32,12 +32,16 @@ namespace ld39 {
 			x += 3.0f;
 		}
 		if (controls & static_cast<std::uint8_t>(Controls::Up) && !(controls & static_cast<std::uint8_t>(Controls::Down))) {
-			this->character.jump();
+			if (!this->lit) {
+				this->character.jump();
+			}
 		}
 		else if (controls & static_cast<std::uint8_t>(Controls::Down) && !(controls & static_cast<std::uint8_t>(Controls::Up))) {
 			y += 5.0f;
 		}
-		this->character.move(x, y);
+		if (!this->lit) {
+			this->character.move(x, y);
+		}
 		this->character.rise();
 		this->gravity();
 		this->level.collision_resolution();
@@ -66,6 +70,10 @@ namespace ld39 {
 			text.setPosition(500.0f, 250.0f);
 			this->window.draw(text);
 		}
+		return;
+	}
+	void CaveScene::make_omelette() {
+		this->character.make_omelette();
 		return;
 	}
 	void CaveScene::gravity() {

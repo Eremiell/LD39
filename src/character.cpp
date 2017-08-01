@@ -1,13 +1,16 @@
 #include "inc/character.hpp"
 
 namespace ld39 {
-	Character::Character(float offset_x, float offset_y) : lives(5), max_lives(5), airborne(false), jumped(false), stands(true), rising(0.0f), last_position(offset_x, offset_y), spawn_point(offset_x, offset_y), moving_frame(0) {
+	Character::Character(float offset_x, float offset_y) : lives(5), max_lives(5), airborne(false), jumped(false), stands(true), rising(0.0f), last_position(offset_x, offset_y), spawn_point(offset_x, offset_y), moving_frame(0), omelette(false) {
 		this->still[0].loadFromFile("res/img/hero.png");
 		this->still[1].loadFromFile("res/img/night_hero.png");
+		this->still[2].loadFromFile("res/img/eehero.png");
 		this->jumping[0].loadFromFile("res/img/jump1.png");
 		this->jumping[1].loadFromFile("res/img/night_jump1.png");
+		this->jumping[2].loadFromFile("res/img/eejump1.png");
 		this->falling[0].loadFromFile("res/img/jump2.png");
 		this->falling[1].loadFromFile("res/img/night_jump2.png");
+		this->falling[2].loadFromFile("res/img/eejump2.png");
 		this->moving[0].loadFromFile("res/img/run1.png");
 		this->moving[1].loadFromFile("res/img/run2.png");
 		this->moving[2].loadFromFile("res/img/run3.png");
@@ -16,6 +19,10 @@ namespace ld39 {
 		this->moving[5].loadFromFile("res/img/night_run2.png");
 		this->moving[6].loadFromFile("res/img/night_run3.png");
 		this->moving[7].loadFromFile("res/img/night_run4.png");
+		this->moving[8].loadFromFile("res/img/eerun1.png");
+		this->moving[9].loadFromFile("res/img/eerun2.png");
+		this->moving[10].loadFromFile("res/img/eerun3.png");
+		this->moving[11].loadFromFile("res/img/eerun4.png");
 		this->sprite.setTexture(this->still[0]);
 		this->sprite.setOrigin(14, 44);
 		this->sprite.setPosition(offset_x, offset_y);
@@ -26,19 +33,11 @@ namespace ld39 {
 		this->sfx_buffers[2].loadFromFile("res/sfx/Land.wav");
 		this->sfx_buffers[3].loadFromFile("res/sfx/Fall.wav");
 		this->sfx_buffers[4].loadFromFile("res/sfx/life.wav");
-		this->sfx_buffers[5].loadFromFile("res/sfx/level.wav");
 		this->sfx[0].setBuffer(this->sfx_buffers[0]);
 		this->sfx[1].setBuffer(this->sfx_buffers[1]);
 		this->sfx[2].setBuffer(this->sfx_buffers[2]);
 		this->sfx[3].setBuffer(this->sfx_buffers[3]);
 		this->sfx[4].setBuffer(this->sfx_buffers[4]);
-		this->sfx[5].setBuffer(this->sfx_buffers[5]);
-		/*this->sfx[0].setVolume(100.0f);
-		this->sfx[1].setVolume(30.0f);
-		this->sfx[2].setVolume(30.0f);
-		this->sfx[3].setVolume(30.0f);
-		this->sfx[4].setVolume(30.0f);
-		this->sfx[5].setVolume(30.0f);*/
 		for (auto &sound : this->sfx) {
 			sound.setVolume(30.0f);
 		}
@@ -85,8 +84,16 @@ namespace ld39 {
 		this->sprite.setPosition(this->spawn_point);
 		this->last_position = this->spawn_point;
 		this->glue();
-		--this->lives;
+		if (this->lives > 0) {
+			--this->lives;
+		}
 		return;
+	}
+	void Character::gain_life() {
+		this->sfx[4].play();
+		if (this->lives < this->max_lives) {
+			++this->lives;
+		}
 	}
 	bool Character::is_alive() {
 		return static_cast<bool>(this->lives);
@@ -102,6 +109,9 @@ namespace ld39 {
 			if ((this->sprite.getPosition().y - this->last_position.y) > 0.0001f) {
 				if (lit) {
 					this->sprite.setTexture(this->falling[0], true);
+					if (this->omelette) {
+						this->sprite.setTexture(this->falling[2], true);
+					}
 				}
 				else {
 					this->sprite.setTexture(this->falling[1], true);
@@ -112,6 +122,9 @@ namespace ld39 {
 			else if ((this->sprite.getPosition().y - this->last_position.y) < -0.0001f) {
 				if (lit) {
 					this->sprite.setTexture(this->jumping[0], true);
+					if (this->omelette) {
+						this->sprite.setTexture(this->jumping[2], true);
+					}
 				}
 				else {
 					this->sprite.setTexture(this->jumping[1], true);
@@ -122,6 +135,9 @@ namespace ld39 {
 			else {
 				if (lit) {
 					this->sprite.setTexture(this->moving[this->moving_frame], true);
+					if (this->omelette) {
+						this->sprite.setTexture(this->moving[this->moving_frame + 8], true);
+					}
 				}
 				else {
 					this->sprite.setTexture(this->moving[this->moving_frame + 4], true);
@@ -141,6 +157,9 @@ namespace ld39 {
 			if ((this->sprite.getPosition().y - this->last_position.y) > 0.0001f) {
 				if (lit) {
 					this->sprite.setTexture(this->falling[0], true);
+					if (this->omelette) {
+						this->sprite.setTexture(this->falling[2], true);
+					}
 				}
 				else {
 					this->sprite.setTexture(this->falling[1], true);
@@ -151,6 +170,9 @@ namespace ld39 {
 			else if ((this->sprite.getPosition().y - this->last_position.y) < -0.0001f) {
 				if (lit) {
 					this->sprite.setTexture(this->jumping[0], true);
+					if (this->omelette) {
+						this->sprite.setTexture(this->jumping[2], true);
+					}
 				}
 				else {
 					this->sprite.setTexture(this->jumping[1], true);
@@ -161,6 +183,9 @@ namespace ld39 {
 			else {
 				if (lit) {
 					this->sprite.setTexture(this->moving[this->moving_frame], true);
+					if (this->omelette) {
+						this->sprite.setTexture(this->moving[this->moving_frame + 8], true);
+					}
 				}
 				else {
 					this->sprite.setTexture(this->moving[this->moving_frame + 4], true);
@@ -179,6 +204,9 @@ namespace ld39 {
 			if ((this->sprite.getPosition().y - this->last_position.y) > 0.0001f) {
 				if (lit) {
 					this->sprite.setTexture(this->falling[0], true);
+					if (this->omelette) {
+						this->sprite.setTexture(this->falling[2], true);
+					}
 				}
 				else {
 					this->sprite.setTexture(this->falling[1], true);
@@ -189,6 +217,9 @@ namespace ld39 {
 			else if ((this->sprite.getPosition().y - this->last_position.y) < -0.0001f) {
 				if (lit) {
 					this->sprite.setTexture(this->jumping[0], true);
+					if (this->omelette) {
+						this->sprite.setTexture(this->jumping[2], true);
+					}
 				}
 				else {
 					this->sprite.setTexture(this->jumping[1], true);
@@ -199,6 +230,9 @@ namespace ld39 {
 			else {
 				if (lit) {
 					this->sprite.setTexture(this->still[0], true);
+					if (this->omelette) {
+						this->sprite.setTexture(this->still[2], true);
+					}
 				}
 				else {
 					this->sprite.setTexture(this->still[1], true);
@@ -239,5 +273,9 @@ namespace ld39 {
 	}
 	sf::Rect<float> Character::get_hitbox() const {
 		return sf::Rect<float>(this->get_x(), this->get_y(), this->get_w(), this->get_h());
+	}
+	void Character::make_omelette() {
+		this->omelette = true;
+		return;
 	}
 }

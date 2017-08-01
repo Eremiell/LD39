@@ -8,8 +8,11 @@
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Font.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
+#include <SFML/Audio/Sound.hpp>
 #include <SFML/System/Vector2.hpp>
 #include "inc/wall.hpp"
+#include "inc/heart.hpp"
 #include "inc/character.hpp"
 
 namespace ld39 {
@@ -35,8 +38,11 @@ namespace ld39 {
 			std::array<sf::Rect<float>, 10> wall_hitboxes;
 			std::vector<Wall> walls;
 			std::uint8_t colour;
-			std::vector<sf::Vector2<float>> hearts;
+			std::vector<Heart> hearts;
 			sf::Vector2<float> spawn;
+			sf::SoundBuffer sfx_buffer;
+			sf::Sound sfx;
+			sf::Texture heart_texture;
 	};
 }
 

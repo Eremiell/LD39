@@ -20,6 +20,7 @@ namespace ld39 {
 			void rise();
 			void glue();
 			void fall();
+			void gain_life();
 			bool is_alive();
 			bool is_still();
 			void set_mannequin(bool lit);
@@ -29,6 +30,7 @@ namespace ld39 {
 			float get_w() const;
 			float get_h() const;
 			sf::Rect<float> get_hitbox() const;
+			void make_omelette();
 		private:
 			std::uint8_t lives;
 			std::uint8_t max_lives;
@@ -39,14 +41,15 @@ namespace ld39 {
 			sf::Vector2<float> last_position;
 			sf::Vector2<float> spawn_point;
 			std::uint8_t moving_frame;
+			bool omelette;
 			sf::Sprite sprite;
-			std::array<sf::Texture, 2> still;
-			std::array<sf::Texture, 2> jumping;
-			std::array<sf::Texture, 2> falling;
-			std::array<sf::Texture, 8> moving;
+			std::array<sf::Texture, 3> still;
+			std::array<sf::Texture, 3> jumping;
+			std::array<sf::Texture, 3> falling;
+			std::array<sf::Texture, 12> moving;
 			std::array<sf::Texture, 2> hearts;
-			std::array<sf::SoundBuffer, 6> sfx_buffers;
-			std::array<sf::Sound, 6> sfx;
+			std::array<sf::SoundBuffer, 5> sfx_buffers;
+			std::array<sf::Sound, 5> sfx;
 			sf::Sprite heart;
 	};
 }

@@ -1,4 +1,4 @@
-# LD39
+# LD39 - Relics of Past
 
 A game experiment by me & xclementx ‌for Ludum Dare 39.
 

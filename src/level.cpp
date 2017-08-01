@@ -57,6 +57,9 @@ namespace ld39 {
 		this->wall_hitboxes[9].height = 411;
 		this->wall_hitboxes[9].left = 36;
 		this->wall_hitboxes[9].top = 10;
+		this->sfx_buffer.loadFromFile("res/sfx/level.wav");
+		this->sfx.setBuffer(this->sfx_buffer);
+		this->heart_texture.loadFromFile("res/img/heart.png");
 		this->build();
 		return;
 	}
@@ -64,6 +67,9 @@ namespace ld39 {
 		window.draw(this->background);
 		for (auto wall : this->walls) {
 			wall.render(window);
+		}
+		for (auto hea : this->hearts) {
+			hea.render(window);
 		}
 		std::stringstream ss;
 		ss << "Layer " << this->layer;
@@ -94,6 +100,13 @@ namespace ld39 {
 						this->character.glue();
 					}
 				}
+			}
+		}
+		for (auto it = this->hearts.begin(); it != this->hearts.end(); ++it) {
+			if (this->character.get_hitbox().intersects((*it).get_hitbox())) {
+				this->character.gain_life();
+				this->hearts.erase(it);
+				break;
 			}
 		}
 		if (this->character.get_hitbox().intersects(sf::Rect<float>(-20.0f, -20.0f, 1040.0f, 20.0f), intersection)) {
@@ -133,8 +146,10 @@ namespace ld39 {
 	}
 	void Level::rebuild() {
 		this->walls.clear();
+		this->hearts.clear();
 		this->build();
 		++this->layer;
+		this->sfx.play();
 		return;
 	}
 	void Level::build() {
@@ -144,6 +159,7 @@ namespace ld39 {
 		std::uniform_int_distribution<std::uint8_t> dist4(0, 3);
 		std::uniform_int_distribution<std::uint8_t> dist5(0, 4);
 		std::uniform_int_distribution<std::uint8_t> dist6(0, 5);
+		std::uniform_int_distribution<std::uint8_t> dist15(0, 19);
 		std::uniform_real_distribution<float> dist_f(0.0f, 1.0f);
 		this->l2r = static_cast<bool>(dist2(mt));
 		if (l2r) {
@@ -164,7 +180,12 @@ namespace ld39 {
 		for (std::uint8_t i = 0; i < num_platforms; ++i) {
 			std::uint8_t type = dist4(mt) + 2;
 			bool mirrored = static_cast<bool>(dist2(mt));
-			this->walls.emplace_back(plat_space * dist_f(mt) / 3 + (i + 0.33f) * plat_space + 75.0f, this->entry_level = 480.0f - (480.0f - (this->entry_level - 20.0f)) * dist_f(mt), wall_hitboxes[type], wall_textures[type], mirrored);
+			this->entry_level = 480.0f - (480.0f - (this->entry_level - 20.0f)) * dist_f(mt);
+			this->walls.emplace_back(plat_space * dist_f(mt) / 3 + (i + 0.33f) * plat_space + 75.0f, this->entry_level, wall_hitboxes[type], wall_textures[type], mirrored);
+			bool heart = !dist15(mt);
+			if (heart) {
+				this->hearts.emplace_back(sf::Vector2<float>(plat_space * (i + 0.5f) + 75.0f, this->entry_level - 90.0f), this->heart_texture);
+			}
 		}
 		this->entry_level = 480.0f - (480.0f - (this->entry_level - 20.0f)) * dist_f(mt);
 		if (!l2r) {
@@ -175,7 +196,12 @@ namespace ld39 {
 			this->walls.emplace_back(1000.0f, this->entry_level + 10.0f + 225.0f, wall_hitboxes[0], wall_textures[0]);
 			this->walls.emplace_back(1000.0f, this->entry_level - 140.0f - 450.0f + 225.0f, wall_hitboxes[0], wall_textures[0]);
 		}
-		this->background.setTexture(this->background_textures[colour]);
+		if (this->lit) {
+			this->background.setTexture(this->background_textures[colour]);
+		}
+		else {
+			this->background.setTexture(this->background_textures[7]);
+		}
 		this->character.new_spawn(this->spawn);
 		return;
 	}
