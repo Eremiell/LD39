@@ -6,6 +6,7 @@
 
 namespace ld39 {
 	Game::Game() : window(sf::VideoMode(1000, 500), "LD39", sf::Style::Titlebar | sf::Style::Close), scene(new CaveScene(this->window, this->background_textures)) {
+		this->window.setKeyRepeatEnabled(false);
 		this->background_textures[0].loadFromFile("res/img/firststage.png");
 		this->background_textures[1].loadFromFile("res/img/nudebackround.png");
 		this->background_textures[2].loadFromFile("res/img/bluebackground.png");
@@ -39,6 +40,7 @@ namespace ld39 {
 						eggs = 0;
 					}
 					else if (event.key.code == sf::Keyboard::Up) {
+						controls |= static_cast<std::uint8_t>(Controls::Up);
 						if (!eggs || eggs == 1) {
 							++eggs;
 						}
@@ -47,6 +49,7 @@ namespace ld39 {
 						}
 					}
 					else if (event.key.code == sf::Keyboard::Down) {
+						controls |= static_cast<std::uint8_t>(Controls::Down);
 						if (eggs == 2 || eggs == 3) {
 							++eggs;
 						}
@@ -94,6 +97,14 @@ namespace ld39 {
 							eggs = 0;
 						}
 					}
+					else if (event.key.code == sf::Keyboard::W) {
+						controls |= static_cast<std::uint8_t>(Controls::Up);
+						eggs = 0;
+					}
+					else if (event.key.code == sf::Keyboard::S) {
+						controls |= static_cast<std::uint8_t>(Controls::Down);
+						eggs = 0;
+					}
 					else {
 						eggs = 0;
 					}
@@ -102,12 +113,6 @@ namespace ld39 {
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) || sf::Keyboard::isKeyPressed(sf::Keyboard::RControl))) {
 				running = false;
-			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-				controls |= static_cast<std::uint8_t>(Controls::Up);
-			}
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) || sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-				controls |= static_cast<std::uint8_t>(Controls::Down);
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
 				controls |= static_cast<std::uint8_t>(Controls::Left);

@@ -4,7 +4,7 @@
 
 namespace ld39 {
 	CaveScene::CaveScene(sf::RenderWindow &window, std::array<sf::Texture, 8> &background_textures) : Scene(window), lit(true), character(500, 250), background_textures(background_textures), level(this->character, this->background_textures, this->font) {
-		this->music.openFromFile("res/mus/themesong.wav");
+		this->music.openFromFile("res/mus/silence.wav");
 		this->music.setLoop(true);
 		this->music.setVolume(20);
 		this->music.play();
@@ -35,9 +35,6 @@ namespace ld39 {
 			if (!this->lit) {
 				this->character.jump();
 			}
-		}
-		else if (controls & static_cast<std::uint8_t>(Controls::Down) && !(controls & static_cast<std::uint8_t>(Controls::Up))) {
-			y += 5.0f;
 		}
 		if (!this->lit) {
 			this->character.move(x, y);

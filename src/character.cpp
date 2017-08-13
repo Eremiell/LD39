@@ -53,9 +53,7 @@ namespace ld39 {
 		return;
 	}
 	void Character::jump() {
-		static sf::Clock jump_clock;
-		if (!this->jumped && jump_clock.getElapsedTime().asSeconds() > 0.25f) {
-			jump_clock.restart();
+		if (!this->jumped) {
 			this->rising = 10.0f;
 			this->sfx[1].play();
 			if (this->airborne) {
