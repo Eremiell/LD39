@@ -53,7 +53,7 @@ namespace ld39 {
 		return;
 	}
 	void Character::jump() {
-		if (!this->jumped) {
+		if (this->lives > 0 && !this->jumped) {
 			this->rising = 10.0f;
 			this->sfx[1].play();
 			if (this->airborne) {
@@ -147,7 +147,9 @@ namespace ld39 {
 						this->moving_frame = 0;
 					}
 				}
-				this->sfx[0].play();
+				if (!this->moving_frame) {
+					this->sfx[0].play();
+				}
 			}
 		}
 		else if ((this->sprite.getPosition().x - this->last_position.x) < -0.0001f) {
@@ -195,7 +197,9 @@ namespace ld39 {
 						this->moving_frame = 0;
 					}
 				}
-				this->sfx[0].play();
+				if (!this->moving_frame) {
+					this->sfx[0].play();
+				}
 			}
 		}
 		else {

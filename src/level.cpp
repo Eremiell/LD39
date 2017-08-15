@@ -5,7 +5,7 @@
 #include <SFML/Graphics/Text.hpp>
 
 namespace ld39 {
-	Level::Level(Character &character, std::array<sf::Texture, 8> &background_textures, sf::Font &font, std::int64_t layer) : layer(layer), character(character), lit(true), entry_level(500.0f - 42.0f), background_textures(background_textures), font(font) {}
+	Level::Level(Character &character, std::array<sf::Texture, 9> &background_textures, sf::Font &font, std::int64_t layer) : layer(layer), character(character), lit(true), entry_level(500.0f - 42.0f), background_textures(background_textures), font(font) {}
 	void Level::init() {
 		this->wall_textures[0].loadFromFile("res/img/bottomentrence.png");
 		this->wall_textures[1].loadFromFile("res/img/topentrence.png");
@@ -17,6 +17,7 @@ namespace ld39 {
 		this->wall_textures[7].loadFromFile("res/img/long_plateform2.png");
 		this->wall_textures[8].loadFromFile("res/img/fall_plateform.png");
 		this->wall_textures[9].loadFromFile("res/img/fall_plateform2.png");
+		this->wall_textures[10].loadFromFile("res/img/transparent.png");
 		this->wall_hitboxes[0].width = 115;
 		this->wall_hitboxes[0].height = 450;
 		this->wall_hitboxes[0].left = 0;
@@ -57,9 +58,28 @@ namespace ld39 {
 		this->wall_hitboxes[9].height = 411;
 		this->wall_hitboxes[9].left = 36;
 		this->wall_hitboxes[9].top = 10;
+		this->wall_hitboxes[10].width = 1000;
+		this->wall_hitboxes[10].height = 44;
+		this->wall_hitboxes[10].left = 0;
+		this->wall_hitboxes[10].top = 0;
+		this->wall_hitboxes[11].width = 34;
+		this->wall_hitboxes[11].height = 137;
+		this->wall_hitboxes[11].left = 0;
+		this->wall_hitboxes[11].top = 0;
+		this->wall_hitboxes[12].width = 20;
+		this->wall_hitboxes[12].height = 99;
+		this->wall_hitboxes[12].left = 0;
+		this->wall_hitboxes[12].top = 0;
+		this->wall_hitboxes[13].width = 23;
+		this->wall_hitboxes[13].height = 78;
+		this->wall_hitboxes[13].left = 0;
+		this->wall_hitboxes[13].top = 0;
 		this->sfx_buffer.loadFromFile("res/sfx/level.wav");
 		this->sfx.setBuffer(this->sfx_buffer);
+		this->sfx.setVolume(20.0f);
 		this->heart_texture.loadFromFile("res/img/heart.png");
+		this->background.setOrigin(500.0f, 250.0f);
+		this->background.setPosition(500.0f, 250.0f);
 		this->build();
 		return;
 	}
@@ -131,14 +151,20 @@ namespace ld39 {
 		return;
 	}
 	bool Level::light_switch() {
-		static sf::Clock light_clock;
-		if (light_clock.getElapsedTime().asSeconds() > 0.25f && this->character.is_alive() && this->character.is_still()) {
-			light_clock.restart();
+		if (this->character.is_alive() && this->character.is_still()) {
 			if (this->lit) {
-				this->background.setTexture(this->background_textures[7]);
+				if (this->colour > 1) {
+					this->background.setTexture(this->background_textures[8]);
+				}
+				else if (this->colour) {
+					this->background.setTexture(this->background_textures[this->colour]);
+				}
+				else {
+					this->background.setTexture(this->background_textures[7]);
+				}
 			}
 			else {
-				this->background.setTexture(this->background_textures[colour]);
+				this->background.setTexture(this->background_textures[this->colour]);
 			}
 			this->lit = !this->lit;
 		}
@@ -147,10 +173,14 @@ namespace ld39 {
 	void Level::rebuild() {
 		this->walls.clear();
 		this->hearts.clear();
-		this->build();
 		++this->layer;
+		this->background.setScale(1.0f, 1.0f);
+		this->build();
 		this->sfx.play();
 		return;
+	}
+	std::uint64_t Level::get_layer() {
+		return this->layer;
 	}
 	void Level::build() {
 		std::mt19937_64 mt(std::chrono::high_resolution_clock::now().time_since_epoch().count());
@@ -159,48 +189,88 @@ namespace ld39 {
 		std::uniform_int_distribution<std::uint8_t> dist4(0, 3);
 		std::uniform_int_distribution<std::uint8_t> dist5(0, 4);
 		std::uniform_int_distribution<std::uint8_t> dist6(0, 5);
-		std::uniform_int_distribution<std::uint8_t> dist15(0, 19);
+		std::uniform_int_distribution<std::uint8_t> dist20(0, 19);
 		std::uniform_real_distribution<float> dist_f(0.0f, 1.0f);
 		this->l2r = static_cast<bool>(dist2(mt));
-		if (l2r) {
-			this->walls.emplace_back(0.0f, this->entry_level + 10.0f + 225.0f, wall_hitboxes[0], wall_textures[0]);
-			this->walls.emplace_back(0.0f, this->entry_level - 140.0f - 450.0f + 225.0f, wall_hitboxes[0], wall_textures[0]);
-			this->spawn.x = 20.0f;
-			this->spawn.y = this->entry_level - 43.0f;
-		}
-		else {
-			this->walls.emplace_back(1000.0f, this->entry_level + 10.0f + 225.0f, wall_hitboxes[0], wall_textures[0]);
-			this->walls.emplace_back(1000.0f, this->entry_level - 140.0f - 450.0f + 225.0f, wall_hitboxes[0], wall_textures[0]);
-			this->spawn.x = 1000.0f - 20.0f;
-			this->spawn.y = this->entry_level - 43.0f;
-		}
-		this->colour = dist5(mt) + 1;
-		std::uint8_t num_platforms = dist3(mt) + 4;
-		float plat_space = 850.0f / num_platforms;
-		for (std::uint8_t i = 0; i < num_platforms; ++i) {
-			std::uint8_t type = dist4(mt) + 2;
-			bool mirrored = static_cast<bool>(dist2(mt));
+		if (this->layer % 10) {
+			if (l2r) {
+				this->walls.emplace_back(0.0f, this->entry_level + 10.0f + 225.0f, wall_hitboxes[0], wall_textures[0]);
+				this->walls.emplace_back(0.0f, this->entry_level - 140.0f - 450.0f + 225.0f, wall_hitboxes[0], wall_textures[0]);
+				this->spawn.x = 20.0f;
+				this->spawn.y = this->entry_level - 43.0f;
+			}
+			else {
+				this->walls.emplace_back(1000.0f, this->entry_level + 10.0f + 225.0f, wall_hitboxes[0], wall_textures[0]);
+				this->walls.emplace_back(1000.0f, this->entry_level - 140.0f - 450.0f + 225.0f, wall_hitboxes[0], wall_textures[0]);
+				this->spawn.x = 1000.0f - 20.0f;
+				this->spawn.y = this->entry_level - 43.0f;
+			}
+			this->colour = dist5(mt) + 2;
+			std::uint8_t num_platforms = dist3(mt) + 4;
+			float plat_space = 850.0f / num_platforms;
+			for (std::uint8_t i = 0; i < num_platforms; ++i) {
+				std::uint8_t type = dist4(mt) + 2;
+				bool mirrored = static_cast<bool>(dist2(mt));
+				this->entry_level = 480.0f - (480.0f - (this->entry_level - 20.0f)) * dist_f(mt);
+				this->walls.emplace_back(plat_space * dist_f(mt) / 3 + (i + 0.33f) * plat_space + 75.0f, this->entry_level, wall_hitboxes[type], wall_textures[type], mirrored);
+				bool heart = !dist20(mt);
+				if (heart) {
+					this->hearts.emplace_back(sf::Vector2<float>(plat_space * (i + 0.5f) + 75.0f, this->entry_level - 90.0f), this->heart_texture);
+				}
+			}
 			this->entry_level = 480.0f - (480.0f - (this->entry_level - 20.0f)) * dist_f(mt);
-			this->walls.emplace_back(plat_space * dist_f(mt) / 3 + (i + 0.33f) * plat_space + 75.0f, this->entry_level, wall_hitboxes[type], wall_textures[type], mirrored);
-			bool heart = !dist15(mt);
-			if (heart) {
-				this->hearts.emplace_back(sf::Vector2<float>(plat_space * (i + 0.5f) + 75.0f, this->entry_level - 90.0f), this->heart_texture);
+			if (!l2r) {
+				this->walls.emplace_back(0.0f, this->entry_level + 10.0f + 225.0f, wall_hitboxes[0], wall_textures[0]);
+				this->walls.emplace_back(0.0f, this->entry_level - 140.0f - 450.0f + 225.0f, wall_hitboxes[0], wall_textures[0]);
+			}
+			else {
+				this->walls.emplace_back(1000.0f, this->entry_level + 10.0f + 225.0f, wall_hitboxes[0], wall_textures[0]);
+				this->walls.emplace_back(1000.0f, this->entry_level - 140.0f - 450.0f + 225.0f, wall_hitboxes[0], wall_textures[0]);
+			}
+			if (this->lit) {
+				this->background.setTexture(this->background_textures[colour]);
+			}
+			else {
+				this->background.setTexture(this->background_textures[8]);
 			}
 		}
-		this->entry_level = 480.0f - (480.0f - (this->entry_level - 20.0f)) * dist_f(mt);
-		if (!l2r) {
-			this->walls.emplace_back(0.0f, this->entry_level + 10.0f + 225.0f, wall_hitboxes[0], wall_textures[0]);
-			this->walls.emplace_back(0.0f, this->entry_level - 140.0f - 450.0f + 225.0f, wall_hitboxes[0], wall_textures[0]);
-		}
 		else {
-			this->walls.emplace_back(1000.0f, this->entry_level + 10.0f + 225.0f, wall_hitboxes[0], wall_textures[0]);
-			this->walls.emplace_back(1000.0f, this->entry_level - 140.0f - 450.0f + 225.0f, wall_hitboxes[0], wall_textures[0]);
-		}
-		if (this->lit) {
-			this->background.setTexture(this->background_textures[colour]);
-		}
-		else {
-			this->background.setTexture(this->background_textures[7]);
+			if (l2r) {
+				this->walls.emplace_back(0.0f, 500.0f - 137.0f, wall_hitboxes[11], wall_textures[10]);
+				this->walls.emplace_back(34.0f, 500.0f - 99.0f, wall_hitboxes[12], wall_textures[10]);
+				this->walls.emplace_back(54.0f, 500.0f - 78.0f, wall_hitboxes[13], wall_textures[10]);
+				this->spawn.x = 20.0f;
+				this->spawn.y = 500.0f - 137.0f - 43.0f;
+			}
+			else {
+				this->walls.emplace_back(1000.0f - 34.0f, 500.0f - 137.0f, wall_hitboxes[11], wall_textures[10]);
+				this->walls.emplace_back(1000.0f - 54.0f, 500.0f - 99.0f, wall_hitboxes[12], wall_textures[10]);
+				this->walls.emplace_back(1000.0f - 77.0f, 500.0f - 78.0f, wall_hitboxes[13], wall_textures[10]);
+				this->spawn.x = 1000.0f - 20.0f;
+				this->spawn.y = 500.0f - 137.0f - 43.0f;
+			}
+			this->walls.emplace_back(0.0f, 456.0f, wall_hitboxes[10], wall_textures[10]);
+			if (!this->layer) {
+				this->colour = 0;
+				if (this->lit) {
+					this->background.setTexture(this->background_textures[colour]);
+				}
+				else {
+					this->background.setTexture(this->background_textures[7]);
+				}
+			}
+			else {
+				this->colour = 1;
+				if (this->lit) {
+					this->background.setTexture(this->background_textures[colour]);
+				}
+				else {
+					this->background.setTexture(this->background_textures[colour]);
+				}
+			}
+			if (l2r) {
+				this->background.setScale(-1.0f, 1.0f);
+			}
 		}
 		this->character.new_spawn(this->spawn);
 		return;

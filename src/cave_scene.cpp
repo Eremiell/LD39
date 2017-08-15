@@ -3,7 +3,7 @@
 #include "inc/utility.hpp"
 
 namespace ld39 {
-	CaveScene::CaveScene(sf::RenderWindow &window, std::array<sf::Texture, 8> &background_textures) : Scene(window), lit(true), character(500, 250), background_textures(background_textures), level(this->character, this->background_textures, this->font) {
+	CaveScene::CaveScene(sf::RenderWindow &window, std::array<sf::Texture, 9> &background_textures) : Scene(window), lit(true), character(500, 250), background_textures(background_textures), level(this->character, this->background_textures, this->font) {
 		this->music.openFromFile("res/mus/silence.wav");
 		this->music.setLoop(true);
 		this->music.setVolume(20);
@@ -45,7 +45,7 @@ namespace ld39 {
 		if (this->character.get_hitbox().intersects(sf::Rect<float>(-10.0f, 500.0f, 1020.0f, 10.0f))) {
 			this->character.fall();
 		}
-		this->character.set_mannequin(lit);
+		this->character.set_mannequin(this->lit || (this->level.get_layer() && !(this->level.get_layer() % 10)));
 		return;
 	}
 	void CaveScene::render() {

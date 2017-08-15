@@ -18,24 +18,25 @@
 namespace ld39 {
 	class Level {
 		public:
-			Level(Character &character, std::array<sf::Texture, 8> &background_textures, sf::Font &font, std::int64_t layer = 0);
+			Level(Character &character, std::array<sf::Texture, 9> &background_textures, sf::Font &font, std::int64_t layer = 0);
 			void init();
 			void render(sf::RenderWindow &window);
 			void collision_resolution();
 			bool light_switch();
 			void rebuild();
+			std::uint64_t get_layer();
 		private:
 			void build();
 			std::uint64_t layer;
 			Character &character;
 			bool lit;
 			float entry_level;
-			std::array<sf::Texture, 8> &background_textures;
+			std::array<sf::Texture, 9> &background_textures;
 			sf::Font &font;
 			sf::Sprite background;
 			bool l2r;
-			std::array<sf::Texture, 10> wall_textures;
-			std::array<sf::Rect<float>, 10> wall_hitboxes;
+			std::array<sf::Texture, 11> wall_textures;
+			std::array<sf::Rect<float>, 14> wall_hitboxes;
 			std::vector<Wall> walls;
 			std::uint8_t colour;
 			std::vector<Heart> hearts;

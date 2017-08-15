@@ -15,7 +15,7 @@ namespace ld39 {
 		private:
 			sf::RenderWindow window;
 			std::unique_ptr<Scene> scene;
-			std::array<sf::Texture, 8> background_textures;
+			std::array<sf::Texture, 9> background_textures;
 	};
 }
 

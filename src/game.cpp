@@ -8,13 +8,14 @@ namespace ld39 {
 	Game::Game() : window(sf::VideoMode(1000, 500), "LD39", sf::Style::Titlebar | sf::Style::Close), scene(new CaveScene(this->window, this->background_textures)) {
 		this->window.setKeyRepeatEnabled(false);
 		this->background_textures[0].loadFromFile("res/img/firststage.png");
-		this->background_textures[1].loadFromFile("res/img/nudebackround.png");
-		this->background_textures[2].loadFromFile("res/img/bluebackground.png");
-		this->background_textures[3].loadFromFile("res/img/redbackground.png");
-		this->background_textures[4].loadFromFile("res/img/yellowbackground.png");
-		this->background_textures[5].loadFromFile("res/img/greenbackround.png");
-		this->background_textures[6].loadFromFile("res/img/night_firststage.png");
-		this->background_textures[7].loadFromFile("res/img/night_background-1.png");
+		this->background_textures[1].loadFromFile("res/img/yellow_firststage.png");
+		this->background_textures[2].loadFromFile("res/img/nudebackround.png");
+		this->background_textures[3].loadFromFile("res/img/bluebackground.png");
+		this->background_textures[4].loadFromFile("res/img/redbackground.png");
+		this->background_textures[5].loadFromFile("res/img/yellowbackground.png");
+		this->background_textures[6].loadFromFile("res/img/greenbackround.png");
+		this->background_textures[7].loadFromFile("res/img/night_firststage.png");
+		this->background_textures[8].loadFromFile("res/img/night_background-1.png");
 		this->scene->init();
 	}
 

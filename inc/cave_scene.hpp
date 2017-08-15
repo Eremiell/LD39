@@ -14,7 +14,7 @@
 namespace ld39 {
 	class CaveScene : public Scene {
 		public:
-			CaveScene(sf::RenderWindow &window, std::array<sf::Texture, 8> &background_textures);
+			CaveScene(sf::RenderWindow &window, std::array<sf::Texture, 9> &background_textures);
 			virtual void init() override;
 			virtual void integrate(std::uint8_t controls) override;
 			virtual void render() override;
@@ -23,7 +23,7 @@ namespace ld39 {
 			void gravity();
 			bool lit;
 			Character character;
-			std::array<sf::Texture, 8> &background_textures;
+			std::array<sf::Texture, 9> &background_textures;
 			Level level;
 			sf::Music music;
 			sf::Font font;
